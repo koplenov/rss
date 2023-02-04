@@ -1,0 +1,11 @@
+$koplenov_rss $mol_page
+	plugins / <= Theme $mol_theme_auto
+	tools /
+		<= search $mol_search
+			query?val <=> query?val \
+		<= lighter $mol_lights_toggle
+	title \RSS
+	body <= posts_view null
+	Post* $mol_link_iconed
+		title <= post_title* \title
+		uri <= post_link* \link
