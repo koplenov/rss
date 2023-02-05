@@ -31,7 +31,7 @@ namespace $.$$ {
 				...this.posts( "https://critter.blog/feed" ),
 			]
 
-			return posts.filter( post => post.title?.includes( this.query() ) )
+			return posts.filter( post => post.title?.toLowerCase().includes( this.query().toLowerCase() ) )
 		}
 
 		posts_view() {
