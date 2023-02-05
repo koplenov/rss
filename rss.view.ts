@@ -4,35 +4,45 @@ namespace $.$$ {
 
 		@$mol_mem
 		proxy() {
-			return "http://localhost:8081/"
+			return "https://rss.kinsle.ru/proxy/"
 		}
 
-		@$mol_mem
-		raw_xml_posts() {
-			return $mol_fetch.text( this.proxy() + "https://dmoth.site/posts/index.xml" )
+		@$mol_mem_key
+		raw_xml_posts( url: string ) {
+			return $mol_fetch.text( this.proxy() + url )
 		}
 
-		@$mol_mem
-		posts() {
-			const data = new window.DOMParser().parseFromString( this.raw_xml_posts(), "text/xml" )
+		@$mol_mem_key
+		posts( site: string ) {
+			const data = new window.DOMParser().parseFromString( this.raw_xml_posts( site ), "text/xml" )
 			const items = data.querySelectorAll( "item" )
-			const posts: { title: string | undefined; link: string | undefined }[] = [];
+			const posts: { title: string | undefined; link: string | undefined }[] = []
 			items.forEach( item => posts.push( {
 				title: item.querySelector( "title" )?.innerHTML,
 				link: item.querySelector( "link" )?.innerHTML,
-			} ));
-			return posts.filter(post => post.title?.includes(this.query()))
+			} ) )
+			return posts
+		}
+
+		@$mol_mem
+		all_posts() {
+			const posts = [
+				...this.posts( "https://dmoth.site/posts/index.xml" ),
+				...this.posts( "https://critter.blog/feed" ),
+			]
+
+			return posts.filter( post => post.title?.includes( this.query() ) )
 		}
 
 		posts_view() {
-			return this.posts().map( post => this.Post( post ) )
+			return this.all_posts().map( post => this.Post( post ) )
 		}
 
-		post_title(id: any) {
+		post_title( id: any ) {
 			return id.title
 		}
-		
-		post_link(id: any) {
+
+		post_link( id: any ) {
 			return id.link
 		}
 	}

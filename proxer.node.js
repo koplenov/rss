@@ -1,12 +1,12 @@
 const http = require( 'http' )
 
 http.createServer( async ( req, res ) => {
-	const headers =  {
-		'Content-Type': 'text/plain; charset=utf-8',
+	const headers = {
+		"Content-Type": "text/plain; charset=utf-8",
 		"Access-Control-Allow-Origin": "*"
 	}
 	try {
-		const site = req.url.substring( 1 )
+		const site = req.url.substring( "/proxy/".length )
 		const response = await fetch( site )
 		const response_text = await response.text()
 		res.writeHead( 200, headers )
